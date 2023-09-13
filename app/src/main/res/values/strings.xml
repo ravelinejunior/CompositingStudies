@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Compositing</string>
+    <string name="image">Image</string>
+    <string name="search">Search</string>
+    <string name="product_image">Image Product\n</string>
+    <string name="price">Price</string>
+    <string name="description">Description</string>
+    <string name="name">Name</string>
+</resources>
