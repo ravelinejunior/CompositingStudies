@@ -4,7 +4,7 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import java.math.BigDecimal
 
 
-private val sampleCandies = listOf(
+ val sampleCandies = listOf(
     ProductItemModel(
         name = "Chocolate",
         price = BigDecimal("3.99"),
@@ -24,7 +24,7 @@ private val sampleCandies = listOf(
     )
 )
 
-private val sampleWomen = listOf(
+ val sampleWomen = listOf(
     ProductItemModel(
         name = "Chocolate",
         price = BigDecimal("3.99"),
@@ -56,7 +56,7 @@ private val sampleWomen = listOf(
     )
 )
 
-private val sampleDrinks = listOf(
+ val sampleDrinks = listOf(
     ProductItemModel(
         name = "Beer",
         price = BigDecimal("5.99"),

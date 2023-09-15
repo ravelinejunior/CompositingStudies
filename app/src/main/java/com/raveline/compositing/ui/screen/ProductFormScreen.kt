@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.raveline.compositing.R
 import com.raveline.compositing.model.ProductItemModel
-import com.raveline.compositing.model.sampleProducts
 import com.raveline.compositing.ui.activity.ProductFormActivity
 import java.math.BigDecimal
 import java.text.DecimalFormat
@@ -60,7 +59,9 @@ val TAG: String? = ProductFormActivity()::class.java.name
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ProductFormScreen() {
+fun ProductFormScreen(
+    onSuccessSaveClick: (ProductItemModel) -> Unit = {}
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = Modifier
@@ -79,10 +80,7 @@ fun ProductFormScreen() {
         }
 
         // Image Preview
-        if (productUrl.isNotBlank() &&
-            productUrl.contains("https://", true) &&
-            productUrl.length > 10
-        ) {
+        if (productUrl.isNotBlank() && productUrl.length > 6) {
             AsyncImage(
                 model = productUrl,
                 contentDescription = stringResource(id = R.string.image),
@@ -189,17 +187,6 @@ fun ProductFormScreen() {
             modifier = Modifier
                 .fillMaxWidth(),
             onTextChanged = {
-                /*try {
-                    productPrice = formatter.format(BigDecimal(it))
-                } catch (e: IllegalArgumentException) {
-                    productPrice = if (it.isBlank()) {
-                        it
-                    } else {
-                        BigDecimal.ZERO.toString()
-                    }
-                } catch (e: NumberFormatException) {
-                    BigDecimal.ZERO.toString()
-                }*/
                 productPrice = it
             },
             leadingIcon = {
@@ -240,27 +227,30 @@ fun ProductFormScreen() {
                     BigDecimal.ZERO
                 }
 
-                val convertedUrl = try {
-                    productUrl
-                } catch (e: NullPointerException) {
-                    sampleProducts[4].image!!
-                }
-
                 if (validateFields(
                         productName,
                         productDescription,
                         convertedPrice,
-                        convertedUrl
                     )
                 ) {
-                    val product = ProductItemModel(
-                        name = productName.trim(),
-                        description = productDescription.trim(),
-                        price = convertedPrice,
-                        image = productUrl.trim()
-                    )
+
+                    val product:ProductItemModel = if (productUrl.isNotBlank()) {
+                        ProductItemModel(
+                            name = productName.trim(),
+                            description = productDescription.trim(),
+                            price = convertedPrice,
+                            image = productUrl.trim()
+                        )
+                    } else {
+                        ProductItemModel(
+                            name = productName.trim(),
+                            description = productDescription.trim(),
+                            price = convertedPrice,
+                        )
+                    }
 
                     Log.i(TAG, "ProductFormScreen: $product")
+                    onSuccessSaveClick(product)
                 }
 
             }
@@ -282,11 +272,9 @@ private fun validateFields(
     name: String,
     description: String,
     price: BigDecimal,
-    url: String,
 ): Boolean {
     return name.isNotBlank() &&
             description.isNotBlank() &&
-            url.isNotBlank() &&
             price > BigDecimal.ZERO
 }
 

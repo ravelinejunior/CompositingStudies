@@ -18,8 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raveline.compositing.R
+import com.raveline.compositing.dao.ProductsDao
 import com.raveline.compositing.model.ProductItemModel
-import com.raveline.compositing.model.sampleProducts
 import com.raveline.compositing.model.sampleSections
 import com.raveline.compositing.ui.components.CardProductItem
 import com.raveline.compositing.ui.components.ProductsSection
@@ -30,6 +30,7 @@ fun HomeScreen(
     sections: Map<String, List<ProductItemModel>>,
     inputText: String = "",
 ) {
+    val dao = ProductsDao()
     Column {
         var text by remember {
             mutableStateOf(inputText)
@@ -43,7 +44,7 @@ fun HomeScreen(
 
         val searchedProducts = remember(key1 = text) {
             if (text.isNotBlank()) {
-                sampleProducts.filter { productItemModel ->
+                dao.productsList().filter { productItemModel ->
                     (productItemModel.name.contains(text, true) ||
                             productItemModel.description?.contains(text, true) == true)
                 }

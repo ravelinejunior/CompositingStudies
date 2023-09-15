@@ -43,7 +43,7 @@ fun ProductsSection(
         ) {
 
             items(products) { product ->
-                ChallengeComposable(product = product)
+                ProductItem(product = product)
             }
 
             /*ChallengeComposable(
