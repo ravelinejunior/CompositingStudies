@@ -2,7 +2,6 @@ package com.raveline.compositing.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.CalendarContract.Colors
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -17,8 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.raveline.compositing.R
@@ -27,6 +26,7 @@ import com.raveline.compositing.model.sampleCandies
 import com.raveline.compositing.model.sampleDrinks
 import com.raveline.compositing.model.sampleWomen
 import com.raveline.compositing.ui.screen.HomeScreen
+import com.raveline.compositing.ui.screen.HomeScreenUiState
 import com.raveline.compositing.ui.theme.CompositingTheme
 
 class MainActivity : ComponentActivity() {
@@ -50,7 +50,11 @@ class MainActivity : ComponentActivity() {
                         "Drinks" to sampleDrinks,
                         "Women" to sampleWomen,
                     )
-                    HomeScreen(sections = sections)
+
+                    val state = remember {
+                        HomeScreenUiState()
+                    }
+                    HomeScreen(sections = sections, state = state)
                 }
             )
         }

@@ -14,10 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.raveline.compositing.R
 import com.raveline.compositing.dao.ProductsDao
 import com.raveline.compositing.model.ProductItemModel
 import com.raveline.compositing.model.sampleSections
@@ -25,33 +23,50 @@ import com.raveline.compositing.ui.components.CardProductItem
 import com.raveline.compositing.ui.components.ProductsSection
 import com.raveline.compositing.ui.components.SearchProductTextField
 
+val dao = ProductsDao()
+
+class HomeScreenUiState(
+    inputText: String = String(),
+
+    ) {
+    var text by mutableStateOf(inputText)
+        private set
+
+    val searchedProducts
+        get() = if (text.isNotBlank()) {
+            dao.productsList().filter { productItemModel ->
+                (productItemModel.name.contains(text, true) ||
+                        productItemModel.description?.contains(text, true) == true)
+            }
+        } else {
+            emptyList()
+        }
+
+    fun isShowSections(): Boolean = text.isBlank()
+
+    val onSearchChange: (String) -> Unit = { searchText ->
+        text = searchText
+    }
+
+}
+
 @Composable
 fun HomeScreen(
     sections: Map<String, List<ProductItemModel>>,
-    inputText: String = "",
+    state: HomeScreenUiState = HomeScreenUiState(),
 ) {
-    val dao = ProductsDao()
+
     Column {
-        var text by remember {
-            mutableStateOf(inputText)
+
+        val text = state.text
+        val searchedProducts = remember(text) {
+            state.searchedProducts
         }
 
         SearchProductTextField(
             inputText = text,
-            onSearchChange = {
-                text = it
-            })
-
-        val searchedProducts = remember(key1 = text) {
-            if (text.isNotBlank()) {
-                dao.productsList().filter { productItemModel ->
-                    (productItemModel.name.contains(text, true) ||
-                            productItemModel.description?.contains(text, true) == true)
-                }
-            } else {
-                emptyList()
-            }
-        }
+            onSearchChange = state.onSearchChange,
+        )
 
         Spacer(modifier = Modifier.padding(vertical = 16.dp))
 
@@ -62,7 +77,7 @@ fun HomeScreen(
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
 
-            if (text.isBlank()) {
+            if (state.isShowSections()) {
                 for (section in sections) {
                     val title = section.key
                     val productList = section.value
@@ -92,6 +107,6 @@ fun HomeScreenPreview() {
 fun HomeScreenWithPrevTextPreview() {
     HomeScreen(
         sections = sampleSections,
-        inputText = stringResource(R.string.search)
+        state = HomeScreenUiState(inputText = "a"),
     )
 }
