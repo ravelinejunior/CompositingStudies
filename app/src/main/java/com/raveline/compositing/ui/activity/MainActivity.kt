@@ -51,10 +51,10 @@ class MainActivity : ComponentActivity() {
                         "Women" to sampleWomen,
                     )
 
-                    val state = remember {
-                        HomeScreenUiState()
+                    val state = remember(sections) {
+                        HomeScreenUiState(sections)
                     }
-                    HomeScreen(sections = sections, state = state)
+                    HomeScreen( state = state)
                 }
             )
         }

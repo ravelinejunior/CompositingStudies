@@ -26,6 +26,7 @@ import com.raveline.compositing.ui.components.SearchProductTextField
 val dao = ProductsDao()
 
 class HomeScreenUiState(
+    val sections: Map<String, List<ProductItemModel>> = emptyMap(),
     inputText: String = String(),
 
     ) {
@@ -52,12 +53,11 @@ class HomeScreenUiState(
 
 @Composable
 fun HomeScreen(
-    sections: Map<String, List<ProductItemModel>>,
     state: HomeScreenUiState = HomeScreenUiState(),
 ) {
 
     Column {
-
+        val sections = state.sections
         val text = state.text
         val searchedProducts = remember(text) {
             state.searchedProducts
@@ -99,14 +99,15 @@ fun HomeScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(sections = sampleSections)
+    HomeScreen(
+        state = HomeScreenUiState(sections = sampleSections)
+    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HomeScreenWithPrevTextPreview() {
     HomeScreen(
-        sections = sampleSections,
-        state = HomeScreenUiState(inputText = "a"),
+        state = HomeScreenUiState(inputText = "Lorem", sections = sampleSections),
     )
 }
