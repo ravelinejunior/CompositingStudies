@@ -25,33 +25,46 @@ import com.raveline.compositing.ui.components.CardProductItem
 import com.raveline.compositing.ui.components.ProductsSection
 import com.raveline.compositing.ui.components.SearchProductTextField
 
+val dao = ProductsDao()
+
+class HomeScreenUiState(inputText: String = String()) {
+    var text by mutableStateOf(inputText)
+
+    val searchedProducts
+        get() = if (text.isNotBlank()) {
+            dao.productsList().filter { productItemModel ->
+                (productItemModel.name.contains(text, true) ||
+                        productItemModel.description?.contains(text, true) == true)
+            }
+        } else {
+            emptyList()
+        }
+
+    fun isShowSections(): Boolean = text.isBlank()
+
+}
+
 @Composable
 fun HomeScreen(
     sections: Map<String, List<ProductItemModel>>,
     inputText: String = "",
 ) {
-    val dao = ProductsDao()
+
     Column {
-        var text by remember {
-            mutableStateOf(inputText)
+
+        val state = remember {
+            HomeScreenUiState(inputText)
+        }
+        val text = state.text
+        val searchedProducts = remember(text) {
+            state.searchedProducts
         }
 
         SearchProductTextField(
             inputText = text,
             onSearchChange = {
-                text = it
+                state.text = it
             })
-
-        val searchedProducts = remember(key1 = text) {
-            if (text.isNotBlank()) {
-                dao.productsList().filter { productItemModel ->
-                    (productItemModel.name.contains(text, true) ||
-                            productItemModel.description?.contains(text, true) == true)
-                }
-            } else {
-                emptyList()
-            }
-        }
 
         Spacer(modifier = Modifier.padding(vertical = 16.dp))
 
@@ -62,7 +75,7 @@ fun HomeScreen(
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
 
-            if (text.isBlank()) {
+            if (state.isShowSections()) {
                 for (section in sections) {
                     val title = section.key
                     val productList = section.value

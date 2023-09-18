@@ -4,7 +4,7 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import java.math.BigDecimal
 
 
- val sampleCandies = listOf(
+val sampleCandies = listOf(
     ProductItemModel(
         name = "Chocolate",
         price = BigDecimal("3.99"),
@@ -24,7 +24,7 @@ import java.math.BigDecimal
     )
 )
 
- val sampleWomen = listOf(
+val sampleWomen = listOf(
     ProductItemModel(
         name = "Chocolate",
         price = BigDecimal("3.99"),
@@ -53,10 +53,41 @@ import java.math.BigDecimal
         name = "Cake",
         price = BigDecimal("11.99"),
         image = "https://www.pornocarioca.com/wp-content/uploads/2015/02/fotos-amadoras-das-mais-gostosas-brasileiras-nuas-no-carnaval-brasileiro-de-2015-34.jpg",
-    )
+    ),
+
+    ProductItemModel(
+        name = "Salam",
+        price = BigDecimal("7.99"),
+        image = "https://thechive.com/wp-content/uploads/2023/09/23f53299-473b-4ac3-9b31-96ba27c32c89.jpg?attachment_cache_bust=4495882&quality=85&strip=info&w=600",
+        description = LoremIpsum(30).values.last()
+    ),
+    ProductItemModel(
+        name = "Salam",
+        price = BigDecimal("7.99"),
+        image = "https://thechive.com/wp-content/uploads/2023/09/68dfe2c2-b0f8-4022-b6e9-fb0e88131fe7.jpg?attachment_cache_bust=4495885&quality=85&strip=info&w=600",
+        description = LoremIpsum(30).values.last()
+    ),
+    ProductItemModel(
+        name = "Salam",
+        price = BigDecimal("7.99"),
+        image = "https://thechive.com/wp-content/uploads/2023/08/48926840181b08247c468a7ac485fd6e.jpg?attachment_cache_bust=4472442&quality=85",
+        description = LoremIpsum(30).values.last()
+    ),
+    ProductItemModel(
+        name = "Salam",
+        price = BigDecimal("7.99"),
+        image = "https://thechive.com/wp-content/uploads/2023/06/36485d4ab85cd964cd39e45eef48a94c.jpeg?attachment_cache_bust=4430824&quality=85",
+        description = LoremIpsum(30).values.last()
+    ),
+    ProductItemModel(
+        name = "Salam",
+        price = BigDecimal("7.99"),
+        image = "https://thechive.com/wp-content/uploads/2023/09/leilaluuu_370196301_1343804136243765_2729896719972194106_n.jpg?attachment_cache_bust=4492422&quality=85&strip=info&w=600",
+        description = LoremIpsum(30).values.last()
+    ),
 )
 
- val sampleDrinks = listOf(
+val sampleDrinks = listOf(
     ProductItemModel(
         name = "Beer",
         price = BigDecimal("5.99"),
@@ -145,12 +176,6 @@ val sampleProducts: List<ProductItemModel> = listOf(
         name = "French Fries",
         price = BigDecimal("7.99"),
         image = "https://images.unsplash.com/photo-1568819317551-31051b37f69f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
-        description = LoremIpsum(30).values.last()
-    ),
-    ProductItemModel(
-        name = "French Fries",
-        price = BigDecimal("7.99"),
-        image = "https://images.pexels.com/photos/1583884/pexels-photo-1583884.jpeg",
         description = LoremIpsum(30).values.last()
     ),
     *sampleDrinks.toTypedArray(), *sampleCandies.toTypedArray(), *sampleWomen.toTypedArray()
