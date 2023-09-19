@@ -27,29 +27,15 @@ val dao = ProductsDao()
 
 class HomeScreenUiState(
     val sections: Map<String, List<ProductItemModel>> = emptyMap(),
-    inputText: String = String(),
+    val searchedProducts: List<ProductItemModel> = emptyList(),
+    val inputText: String = String(),
+    val onSearchChange: (String) -> Unit = {}
 
-    ) {
-    var text by mutableStateOf(inputText)
-        private set
-
-    val searchedProducts
-        get() = if (text.isNotBlank()) {
-            dao.productsList().filter { productItemModel ->
-                (productItemModel.name.contains(text, true) ||
-                        productItemModel.description?.contains(text, true) == true)
-            }
-        } else {
-            emptyList()
-        }
-
-    fun isShowSections(): Boolean = text.isBlank()
-
-    val onSearchChange: (String) -> Unit = { searchText ->
-        text = searchText
-    }
+) {
+    fun isShowSections(): Boolean = inputText.isBlank()
 
 }
+
 
 @Composable
 fun HomeScreen(
@@ -58,8 +44,8 @@ fun HomeScreen(
 
     Column {
         val sections = state.sections
-        val text = state.text
-        val searchedProducts = remember(text) {
+        val text = state.inputText
+        val searchedProducts = remember(text, sections) {
             state.searchedProducts
         }
 
