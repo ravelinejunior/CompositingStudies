@@ -18,7 +18,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raveline.compositing.dao.ProductsDao
 import com.raveline.compositing.model.ProductItemModel
+import com.raveline.compositing.model.sampleCandies
+import com.raveline.compositing.model.sampleDrinks
+import com.raveline.compositing.model.sampleProducts
 import com.raveline.compositing.model.sampleSections
+import com.raveline.compositing.model.sampleWomen
 import com.raveline.compositing.ui.components.CardProductItem
 import com.raveline.compositing.ui.components.ProductsSection
 import com.raveline.compositing.ui.components.SearchProductTextField
@@ -80,6 +84,48 @@ fun HomeScreen(
 
         }
     }
+}
+
+@Composable
+fun HomeScreen(productsDao: List<ProductItemModel>) {
+    val sections = mapOf(
+        "All Products" to productsDao,
+        "Sales" to sampleDrinks + sampleCandies,
+        "Candies" to sampleCandies,
+        "Drinks" to sampleDrinks,
+        "Women" to sampleWomen,
+    )
+
+    var text by remember {
+        mutableStateOf(String())
+    }
+
+    fun containsInNameOrDescription() = { productItemModel: ProductItemModel ->
+        (productItemModel.name.contains(text, true) ||
+                productItemModel.description?.contains(text, true) == true)
+    }
+
+    val searchedProducts = remember(text, productsDao) {
+        if (text.isNotBlank()) {
+            sampleProducts.filter(containsInNameOrDescription()) +
+                    productsDao.filter(containsInNameOrDescription())
+        } else {
+            emptyList()
+        }
+    }
+
+    val state = remember(productsDao, text) {
+        HomeScreenUiState(
+            sections = sections,
+            searchedProducts = searchedProducts,
+            inputText = text,
+            onSearchChange = {
+                text = it
+            }
+        )
+    }
+
+    HomeScreen(state = state)
 }
 
 @Preview(showBackground = true, showSystemUi = true)

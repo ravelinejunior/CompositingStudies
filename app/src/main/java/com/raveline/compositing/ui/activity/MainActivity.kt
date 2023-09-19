@@ -16,22 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.raveline.compositing.R
 import com.raveline.compositing.dao.ProductsDao
-import com.raveline.compositing.model.ProductItemModel
-import com.raveline.compositing.model.sampleCandies
-import com.raveline.compositing.model.sampleDrinks
-import com.raveline.compositing.model.sampleProducts
-import com.raveline.compositing.model.sampleWomen
 import com.raveline.compositing.ui.screen.HomeScreen
-import com.raveline.compositing.ui.screen.HomeScreenUiState
 import com.raveline.compositing.ui.theme.CompositingTheme
 
 class MainActivity : ComponentActivity() {
@@ -49,44 +39,7 @@ class MainActivity : ComponentActivity() {
 
                 content = {
                     val productsDao = dao.productsList()
-                    val sections = mapOf(
-                        "All Products" to productsDao,
-                        "Sales" to sampleDrinks + sampleCandies,
-                        "Candies" to sampleCandies,
-                        "Drinks" to sampleDrinks,
-                        "Women" to sampleWomen,
-                    )
-
-                    var text by remember {
-                        mutableStateOf(String())
-                    }
-
-                    fun containsInNameOrDescription() = { productItemModel: ProductItemModel ->
-                        (productItemModel.name.contains(text, true) ||
-                                productItemModel.description?.contains(text, true) == true)
-                    }
-
-                    val searchedProducts = remember(text, productsDao) {
-                        if (text.isNotBlank()) {
-                            sampleProducts.filter(containsInNameOrDescription()) +
-                                    productsDao.filter(containsInNameOrDescription())
-                        } else {
-                            emptyList()
-                        }
-                    }
-
-                    val state = remember(productsDao, text) {
-                        HomeScreenUiState(
-                            sections = sections,
-                            searchedProducts = searchedProducts,
-                            inputText = text,
-                            onSearchChange = {
-                                text = it
-                            }
-                        )
-                    }
-
-                    HomeScreen(state = state)
+                    HomeScreen(productsDao = productsDao)
                 }
             )
         }
