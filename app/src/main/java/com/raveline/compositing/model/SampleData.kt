@@ -137,9 +137,9 @@ val sampleProducts: List<ProductItemModel> = listOf(
         description = LoremIpsum(30).values.last()
     ),
     ProductItemModel(
-        name = "French Fries",
+        name = "Fries",
         price = BigDecimal("7.99"),
-        image = "https://thechive.com/wp-content/uploads/2023/08/4tobrvpt6fib1.jpg?attachment_cache_bust=4480508&quality=85&strip=info&w=600",
+        image = "https://thechive.com/wp-content/uploads/2023/09/6b0974ab-49f0-434e-aaed-ff219e6a0b71.jpg?attachment_cache_bust=4492400&quality=85&strip=info&w=600",
         description = LoremIpsum(30).values.last()
     ),
     ProductItemModel(
@@ -173,9 +173,9 @@ val sampleProducts: List<ProductItemModel> = listOf(
         description = LoremIpsum(30).values.last()
     ),
     ProductItemModel(
-        name = "French Fries",
+        name = "French Alada",
         price = BigDecimal("7.99"),
-        image = "https://images.unsplash.com/photo-1568819317551-31051b37f69f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80",
+        image = "https://thechive.com/wp-content/uploads/2023/09/6b0974ab-49f0-434e-aaed-ff219e6a0b71.jpg?attachment_cache_bust=4492400&quality=85&strip=info&w=600",
         description = LoremIpsum(30).values.last()
     ),
     *sampleDrinks.toTypedArray(), *sampleCandies.toTypedArray(), *sampleWomen.toTypedArray()

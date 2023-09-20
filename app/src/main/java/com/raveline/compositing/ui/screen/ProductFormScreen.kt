@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -75,7 +76,7 @@ fun ProductFormScreen(
 
         Text(text = "Creating Product", style = MaterialTheme.typography.titleMedium)
 
-        var productUrl by remember {
+        var productUrl by rememberSaveable {
             mutableStateOf(String())
         }
 
@@ -111,7 +112,7 @@ fun ProductFormScreen(
 
         // Product Name
 
-        var productName by remember {
+        var productName by rememberSaveable {
             mutableStateOf(String())
         }
 
@@ -136,7 +137,7 @@ fun ProductFormScreen(
 
         // Product Description
 
-        var productDescription by remember {
+        var productDescription by rememberSaveable {
             mutableStateOf(String())
         }
 
@@ -174,7 +175,7 @@ fun ProductFormScreen(
         )
 
         // Product Price
-        var productPrice by remember {
+        var productPrice by rememberSaveable {
             mutableStateOf(String())
         }
 
