@@ -1,19 +1,20 @@
 package com.raveline.compositing.dao
 
-import androidx.compose.runtime.mutableStateListOf
 import com.raveline.compositing.model.ProductItemModel
-import com.raveline.compositing.model.sampleProducts
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class ProductsDao {
 
     companion object {
-        private val products = mutableStateListOf<ProductItemModel>(*sampleProducts.toTypedArray())
+        private val products = MutableStateFlow<List<ProductItemModel>>(emptyList())
     }
 
-    fun productsList() = products.toList()
+    fun productsList(): StateFlow<List<ProductItemModel>> = products.asStateFlow()
 
     fun saveProduct(product: ProductItemModel) {
-        products.add(0,product)
+        products.value = products.value + product
     }
 
 }
