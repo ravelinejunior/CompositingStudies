@@ -19,7 +19,7 @@ class HomeScreenViewModel : ViewModel() {
 
     private val productsDao = ProductsDao()
 
-    private var _uiState: MutableStateFlow<HomeScreenUiState> = MutableStateFlow(
+    private val _uiState: MutableStateFlow<HomeScreenUiState> = MutableStateFlow(
         HomeScreenUiState()
     )
 
@@ -50,8 +50,6 @@ class HomeScreenViewModel : ViewModel() {
                         inputText = it,
                         searchedProducts = searchedProducts(it)
                     )
-
-
                 }
             )
         }

@@ -27,18 +27,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -53,17 +49,21 @@ import coil.compose.AsyncImage
 import com.raveline.compositing.R
 import com.raveline.compositing.model.ProductItemModel
 import com.raveline.compositing.ui.activity.ProductFormActivity
+import com.raveline.compositing.ui.states.ProductFormUiState
+import com.raveline.compositing.ui.viewmodel.ProductFormScreenViewModel
 import java.math.BigDecimal
-import java.text.DecimalFormat
 
 val TAG: String? = ProductFormActivity()::class.java.name
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProductFormScreen(
+    viewModel: ProductFormScreenViewModel,
     onSuccessSaveClick: (ProductItemModel) -> Unit = {}
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val state by viewModel.uiState.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,14 +76,10 @@ fun ProductFormScreen(
 
         Text(text = "Creating Product", style = MaterialTheme.typography.titleMedium)
 
-        var productUrl by rememberSaveable {
-            mutableStateOf(String())
-        }
-
         // Image Preview
-        if (productUrl.isNotBlank() && productUrl.length > 6) {
+        if (state.url.isNotBlank() && state.url.length > 6) {
             AsyncImage(
-                model = productUrl,
+                model = state.url,
                 contentDescription = stringResource(id = R.string.image),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -96,10 +92,8 @@ fun ProductFormScreen(
         }
 
         StyledOutlineTextForm(
-            inputText = productUrl,
-            onTextChanged = {
-                productUrl = it
-            },
+            inputText = state.url,
+            onTextChanged = state.onUrlChange,
             singleLine = true,
             hintText = "Image",
             leadingIcon = {
@@ -112,15 +106,9 @@ fun ProductFormScreen(
 
         // Product Name
 
-        var productName by rememberSaveable {
-            mutableStateOf(String())
-        }
-
         StyledOutlineTextForm(
-            inputText = productName,
-            onTextChanged = {
-                productName = it
-            },
+            inputText = state.name,
+            onTextChanged = state.onNameChange,
             hintText = stringResource(R.string.name),
             leadingIcon = {
                 Icon(
@@ -137,18 +125,12 @@ fun ProductFormScreen(
 
         // Product Description
 
-        var productDescription by rememberSaveable {
-            mutableStateOf(String())
-        }
-
         StyledOutlineTextForm(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(100.dp),
-            inputText = productDescription,
-            onTextChanged = {
-                productDescription = it
-            },
+            inputText = state.description,
+            onTextChanged = state.onDescriptionChange,
             maxLines = 10,
             hintText = stringResource(R.string.description),
             label = {
@@ -175,21 +157,11 @@ fun ProductFormScreen(
         )
 
         // Product Price
-        var productPrice by rememberSaveable {
-            mutableStateOf(String())
-        }
-
-        val formatter = remember {
-            DecimalFormat("#.##")
-        }
-
         StyledOutlineTextForm(
-            inputText = productPrice,
+            inputText = state.price,
             modifier = Modifier
                 .fillMaxWidth(),
-            onTextChanged = {
-                productPrice = it
-            },
+            onTextChanged = state.onPriceChange,
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.PriceChange,
@@ -222,37 +194,7 @@ fun ProductFormScreen(
             shape = RoundedCornerShape(50),
             onClick = {
 
-                val convertedPrice = try {
-                    BigDecimal(productPrice)
-                } catch (e: NumberFormatException) {
-                    BigDecimal.ZERO
-                }
-
-                if (validateFields(
-                        productName,
-                        productDescription,
-                        convertedPrice,
-                    )
-                ) {
-
-                    val product:ProductItemModel = if (productUrl.isNotBlank()) {
-                        ProductItemModel(
-                            name = productName.trim(),
-                            description = productDescription.trim(),
-                            price = convertedPrice,
-                            image = productUrl.trim()
-                        )
-                    } else {
-                        ProductItemModel(
-                            name = productName.trim(),
-                            description = productDescription.trim(),
-                            price = convertedPrice,
-                        )
-                    }
-
-                    Log.i(TAG, "ProductFormScreen: $product")
-                    onSuccessSaveClick(product)
-                }
+                saveData(state, onSuccessSaveClick)
 
             }
         ) {
@@ -266,6 +208,43 @@ fun ProductFormScreen(
         }
 
         Spacer(modifier = Modifier)
+    }
+}
+
+private fun saveData(
+    uiState: ProductFormUiState,
+    onSuccessSaveClick: (ProductItemModel) -> Unit,
+) {
+    val convertedPrice = try {
+        BigDecimal(uiState.price)
+    } catch (e: NumberFormatException) {
+        BigDecimal.ZERO
+    }
+
+    if (validateFields(
+            uiState.name,
+            uiState.description,
+            convertedPrice,
+        )
+    ) {
+
+        val product: ProductItemModel = if (uiState.url.isNotBlank()) {
+            ProductItemModel(
+                name = uiState.name.trim(),
+                description = uiState.description.trim(),
+                price = convertedPrice,
+                image = uiState.url.trim()
+            )
+        } else {
+            ProductItemModel(
+                name = uiState.name.trim(),
+                description = uiState.description.trim(),
+                price = convertedPrice,
+            )
+        }
+
+        Log.i(TAG, "ProductFormScreen: $product")
+        onSuccessSaveClick(product)
     }
 }
 
@@ -347,5 +326,5 @@ fun OutlinedStyledTextFormPreview() {
 @Preview
 @Composable
 fun ProductFormScreenPreview() {
-    ProductFormScreen()
+    //ProductFormScreen()
 }

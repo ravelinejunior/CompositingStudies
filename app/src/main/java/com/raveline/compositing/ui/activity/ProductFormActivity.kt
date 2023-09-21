@@ -3,6 +3,7 @@ package com.raveline.compositing.ui.activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.heightIn
@@ -22,6 +23,7 @@ import com.raveline.compositing.R
 import com.raveline.compositing.dao.ProductsDao
 import com.raveline.compositing.ui.screen.ProductFormScreen
 import com.raveline.compositing.ui.theme.CompositingTheme
+import com.raveline.compositing.ui.viewmodel.ProductFormScreenViewModel
 
 
 class ProductFormActivity : ComponentActivity() {
@@ -56,7 +58,9 @@ class ProductFormActivity : ComponentActivity() {
                         }
                     ) {
                         Box(modifier = Modifier.padding(it)) {
+                            val viewModel by viewModels<ProductFormScreenViewModel>()
                             ProductFormScreen(
+                                viewModel = viewModel,
                                 onSuccessSaveClick = { product ->
                                     dao.saveProduct(product)
                                     finish()
