@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.raveline.compositing.R
-import com.raveline.compositing.dao.ProductsDao
 import com.raveline.compositing.ui.screen.ProductFormScreen
 import com.raveline.compositing.ui.theme.CompositingTheme
 import com.raveline.compositing.ui.viewmodel.ProductFormScreenViewModel
@@ -28,11 +27,9 @@ import com.raveline.compositing.ui.viewmodel.ProductFormScreenViewModel
 
 class ProductFormActivity : ComponentActivity() {
 
-
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val dao = ProductsDao()
         setContent {
             CompositingTheme {
                 Surface {
@@ -61,8 +58,7 @@ class ProductFormActivity : ComponentActivity() {
                             val viewModel by viewModels<ProductFormScreenViewModel>()
                             ProductFormScreen(
                                 viewModel = viewModel,
-                                onSuccessSaveClick = { product ->
-                                    dao.saveProduct(product)
+                                onSuccessSaveClick = {
                                     finish()
                                 },
                             )

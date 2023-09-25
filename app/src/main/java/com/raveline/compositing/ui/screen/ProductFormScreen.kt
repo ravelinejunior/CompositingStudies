@@ -1,6 +1,5 @@
 package com.raveline.compositing.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -47,23 +45,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.raveline.compositing.R
-import com.raveline.compositing.model.ProductItemModel
 import com.raveline.compositing.ui.activity.ProductFormActivity
 import com.raveline.compositing.ui.states.ProductFormUiState
 import com.raveline.compositing.ui.viewmodel.ProductFormScreenViewModel
-import java.math.BigDecimal
 
 val TAG: String? = ProductFormActivity()::class.java.name
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProductFormScreen(
     viewModel: ProductFormScreenViewModel,
-    onSuccessSaveClick: (ProductItemModel) -> Unit = {}
+    onSuccessSaveClick: () -> Unit = {}
 ) {
 
     val state by viewModel.uiState.collectAsState()
 
+    ProductFormScreen(
+        state = state,
+        onSuccessSaveClick = {
+            viewModel.saveData(state)
+            onSuccessSaveClick()
+        },
+    )
+}
+
+@Composable
+fun ProductFormScreen(
+    state: ProductFormUiState,
+    onSuccessSaveClick: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -77,7 +86,7 @@ fun ProductFormScreen(
         Text(text = "Creating Product", style = MaterialTheme.typography.titleMedium)
 
         // Image Preview
-        if (state.url.isNotBlank() && state.url.length > 6) {
+        if (state.isShowPreview) {
             AsyncImage(
                 model = state.url,
                 contentDescription = stringResource(id = R.string.image),
@@ -192,11 +201,7 @@ fun ProductFormScreen(
                 .fillMaxWidth()
                 .heightIn(60.dp),
             shape = RoundedCornerShape(50),
-            onClick = {
-
-                saveData(state, onSuccessSaveClick)
-
-            }
+            onClick = onSuccessSaveClick,
         ) {
             Text(
                 text = "Save",
@@ -209,53 +214,6 @@ fun ProductFormScreen(
 
         Spacer(modifier = Modifier)
     }
-}
-
-private fun saveData(
-    uiState: ProductFormUiState,
-    onSuccessSaveClick: (ProductItemModel) -> Unit,
-) {
-    val convertedPrice = try {
-        BigDecimal(uiState.price)
-    } catch (e: NumberFormatException) {
-        BigDecimal.ZERO
-    }
-
-    if (validateFields(
-            uiState.name,
-            uiState.description,
-            convertedPrice,
-        )
-    ) {
-
-        val product: ProductItemModel = if (uiState.url.isNotBlank()) {
-            ProductItemModel(
-                name = uiState.name.trim(),
-                description = uiState.description.trim(),
-                price = convertedPrice,
-                image = uiState.url.trim()
-            )
-        } else {
-            ProductItemModel(
-                name = uiState.name.trim(),
-                description = uiState.description.trim(),
-                price = convertedPrice,
-            )
-        }
-
-        Log.i(TAG, "ProductFormScreen: $product")
-        onSuccessSaveClick(product)
-    }
-}
-
-private fun validateFields(
-    name: String,
-    description: String,
-    price: BigDecimal,
-): Boolean {
-    return name.isNotBlank() &&
-            description.isNotBlank() &&
-            price > BigDecimal.ZERO
 }
 
 @Composable
